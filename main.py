@@ -6,19 +6,19 @@ from view.menu import *
 
 #_______________________ instanciar classes _____________________
 
-barbeariaDB = Conexao("barbearia","localhost","5432","postgres","postgres")
+barbeariaDB = Conexao("barbearia","localhost","5432","postgres","postgre")
 cliente = Clientes()
 
 
 #_______________________ instanciar classes _____________________
 
-# tabela cliente foi criada, foi colocada em comentário para não gerar um erro
-# 
-# resultado = barbeariaDB.manipularBanco(criarTabelaClientes())
-# if resultado:
-#     print("tabela cliente criada")
-# else:
-#     print("erro ao tentar criar a tabela cliente")
+#tabela cliente foi criada, foi colocada em comentário para não gerar um erro
+
+resultado = barbeariaDB.manipularBanco(criarTabelaClientes())
+if resultado:
+    print("tabela cliente criada")
+else:
+    print("erro ao tentar criar a tabela cliente")
 
 op = True
 while op != "0":
