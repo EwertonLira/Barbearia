@@ -5,7 +5,7 @@ def criarTabelaClientes():
     sql ='''CREATE TABLE "clientes" (
     "cliente_id" int GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
     "cliente_nome" varchar(255) NOT NULL,
-    "cliente_telefone" varchar(255), NOT NULL DEFAULT 'não informado',
+    "cliente_telefone" varchar(255) NOT NULL DEFAULT 'não informado',
     "cliente_email" varchar(255) NOT NULL DEFAULT 'não informado'
     );
     '''
