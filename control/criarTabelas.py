@@ -15,7 +15,7 @@ def criarTabelaProdutos():
     sql = '''CREATE TABLE "produtos" (
     "produto_id" int GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
     "produto_nome" varchar(255) NOT NULL,
-    "produto_preco" numeric(6,2), NOT NULL,
+    "produto_preco" numeric(6,2) NOT NULL,
     "produto_quantidade" int NOT NULL
     );
     '''
@@ -25,7 +25,7 @@ def criarTabelaServicos():
     sql = '''CREATE TABLE "servicos" (
     "servico_id" int GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
     "servico_nome" varchar(255) NOT NULL,
-    "servico_preco" numeric(6,2), NOT NULL,
+    "servico_preco" numeric(6,2) NOT NULL,
     "servico_tempo_execucao" time NOT NULL
     );
     '''
