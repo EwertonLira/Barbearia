@@ -4,7 +4,7 @@ from control.criarTabelas import *
 from model.classCliente import *
 from model.classProduto import *
 from view.menu import *
-
+import json
 #_______________________ instanciar classes _____________________
 
 barbeariaDB = Conexao("barbearia","localhost","5432","postgres","postgres")
@@ -12,14 +12,32 @@ cliente = Clientes()
 produto = Produtos()
 
 #_______________________ instanciar classes _____________________
+def CriarTabelas():
+    with open("control\statusTabelas.json", 'r') as arquivoJson:
+        chave = json.load(arquivoJson)
+    
+    if chave[0]["status"] == "criada":
+        print("chave lida")
+        pass
+    else:
+        resultadoCliente = barbeariaDB.manipularBanco(criarTabelaClientes())
+        resultadoProduto = barbeariaDB.manipularBanco(criarTabelaProdutos())
+        resultadoAgendamento = barbeariaDB.manipularBanco(criarTabelaAgendamentos())
+        resultadoVendas = barbeariaDB.manipularBanco(criarTabelaVendas())
+        resultadoItens = barbeariaDB.manipularBanco(criarTabelaItens())
 
-# tabela cliente foi criada, foi colocada em comentário para não gerar um erro
-#
-# resultado = barbeariaDB.manipularBanco(criarTabelaProdutos())
-# if resultado:
-#     print("tabela criada")
-# else:
-#     print("erro ao tentar criar a tabela")
+        resultados = bool(resultadoCliente) and bool(resultadoProduto) and bool(resultadoAgendamento) and bool(resultadoVendas) and bool(resultadoItens)
+
+        if resultados:
+            print("tabelas criada")
+            statusTabela = { "status" : "criada" }
+            with open("control\statusTabelas.json", 'w') as arquivoJson:
+                json.dump(statusTabela , arquivoJson, indent=2)
+
+        else:
+            print("erro ao tentar criar a tabelas")
+
+CriarTabelas()
 
 op = True
 while op != "0":
