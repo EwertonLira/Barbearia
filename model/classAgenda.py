@@ -57,3 +57,68 @@ código | hora | situação
         Values(default, '{clienteID}', '{produtoID}', '{self._horario}')
         '''
         return sql
+
+    def atualizarAgenda(self, agendaID):   
+        opCampo = "rodar while"
+        while not(opCampo in "1|2|3|4|0"):
+            print('''
+            qual campo deseja atualizar do agendamento?
+            
+            [1] 🔤 ID do Cliente
+            [2] 📱 ID do serviço
+            [3] 📧 Horário
+            [4] Todos
+            [0] ↩️ Voltar ao menu principal
+            ''')
+            opCampo = input(": ")
+            match opCampo:
+                case "1":
+                    self.cliente_id = input("Insira o ID do cliente: ")
+                    sql = f'''
+                        UPDATE "agendamentos"
+                        SET "cliente_id" = '{self._clienteID}'
+                        WHERE "agendamento_id" = '{agendaID}';
+                        '''
+                case "2":
+                    self._produtoID = input("Insira o número de telefone do cliente: ")
+                    sql = f'''
+                        UPDATE "agendamentos"
+                        SET "produto_id" = '{self._produtoID}'
+                        WHERE "agendamento_id" = '{agendaID}';
+                        '''
+                case "3":
+                    self._horario = input("Insira o email do cliente: ")
+                    sql = f'''
+                        UPDATE "agendamentos"
+                        SET "agendamento_horario" = '{self._horario}'
+                        WHERE "agendamento_id" = '{agendaID}';
+                        '''
+                case "4":
+                    self._inputAgenda()
+                    sql = f'''
+                    UPDATE "agendamentos"
+                    SET "cliente_id" = '{self._clienteID}',
+                        "produto_id" = '{self._produtoID}',
+                        "agendamento_horario" = '{self._horario}'
+                    WHERE "agendamento_id" = '{agendaID}';
+                    '''
+                case "0":
+                    sql = None
+                case _:
+                    print("comando inválido Tente novamente")
+                    input("aperte [Enter↵] para continuar")
+
+            return sql
+
+    def deletarAgenda(self,agendaID):
+            sql = f''' DELETE 
+        FROM "agendamentos"
+        WHERE "agendamento_id" = '{agendaID}';
+        '''
+            return sql
+
+    def deletarTodaAgenda(self):
+            sql = f''' DELETE 
+        FROM "agendamentos";
+        '''
+            return sql

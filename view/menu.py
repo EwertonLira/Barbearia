@@ -261,16 +261,119 @@ Deseja deletar algum Produto? Digite [1]Sim ou [0]Não.
 
 def mensagemListaAgenda(resultado):
     listaHorasAgenda = []
+    listaIdAgenda = []
     print("id |IDCliente| IDServiço | horário ")
     for agendamento in resultado:
         print(f"{agendamento[0]} | {agendamento[1]} | {agendamento[2]} | {agendamento[3]}")
         listaHorasAgenda.append(agendamento[3])
+        listaIdAgenda.append(agendamento[0])
     
     if listaHorasAgenda:
         pass
     else:
         print("Todos os horários estão diponíveis")
 
-    return listaHorasAgenda
+    return listaHorasAgenda, listaIdAgenda
+
+def mensagemEscolherDeletarOuAtualizarAgenda():
+    
+    op = "rodarWhile"
+    while not(op in "1|2|0"): 
+        
+        print("""
+Deseja fazer alguma alteração na lista de horários da Agenda?
+Digite [1]Atualizar, [2]Deletar ou [0]sair.
+    
+    [1] Atualizar horário da agenda
+    [2] Deletar horário da agenda
+    [0] sair
+    """)
+        op = input(": ")
+        match op:
+            case "1":
+                opEscolhida = "Atualizar"
+            case "2":
+                opEscolhida = "Deletar"
+            case "0":
+                opEscolhida = False
+            case _:
+                    print("comando inválido, tente novamente")
+                    input("aperte [Enter↵] para continuar")
+        
+    return opEscolhida
+
+def mensagemAtualizarAgenda(listaHoraAgenda):
+    
+    op = "rodarWhile"
+    while not(op in "1|0"):
+        print("""
+confirme atualização da Agenda? Digite [1]Sim ou [0]Não.
+
+[1] Sim
+[0] Não
+""")
+        op = input(": ")
+        match op:
+            case "1":
+                opcao = 0
+                while not(opcao in listaHoraAgenda):
+                    print("Digite o ID  do  horário ser atualizado:")          
+                    try:
+                        opcao = int(input(": "))                
+                        if opcao in listaHoraAgenda:
+                            pass
+                        else:
+                            print("ID do horário não existe")
+                            print("Voltando ao menu principal")
+                            input("aperte [Enter↵] para continuar")
+                            opcao = False
+                            break
+                    except:
+                        print("comando invalido. Tente novamente")
+            case "0":
+                opcao = False
+            case _:
+                print("comando inválido, tente novamente")
+                input("aperte [Enter↵] para continuar")
+                op = "rodarWhile"
+        
+    return opcao
+
+def mensagemDeletarAgenda(listaIdClientes):
+    
+    op = "rodarWhile"
+    while not(op in "1|0"):
+        print("""
+confirma deletar algum horário da agenda? Digite [1]Sim ou [0]Não.
+
+[1] Sim
+[0] Não
+""")
+        op = input(": ")
+        match op:
+            case "1":
+                opcao = 0
+                while not(opcao in listaIdClientes):
+                    print("Digite o ID do horário da agenda a ser deletado:")          
+                    try:
+                        opcao = int(input(": "))                
+                        if opcao in listaIdClientes:
+                            pass
+                        else:
+                            print("ID do horário da agenda não existe")
+                            print("Voltando ao menu principal")
+                            input("aperte [Enter↵] para continuar")
+                            opcao = False
+                            break
+                    except:
+                        print("comando invalido. Tente novamente")
+            case "0":
+                opcao = False
+            case _:
+                print("comando inválido, tente novamente")
+                input("aperte [Enter↵] para continuar")
+                op = "rodarWhile"
+        
+    return opcao
 
 

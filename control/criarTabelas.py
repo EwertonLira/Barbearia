@@ -12,21 +12,24 @@ def CriarTodasTabelas(barbeariaDB):
         if chave["status"] == "criada":
             pass
     except:
-        resultadoCliente = barbeariaDB.manipularBanco(criarTabelaClientes())
-        resultadoProduto = barbeariaDB.manipularBanco(criarTabelaProdutos())
-        resultadoVendas = barbeariaDB.manipularBanco(criarTabelaVendas())
-        resultadoItens = barbeariaDB.manipularBanco(criarTabelaItens())
-        resultadoAgendamento = barbeariaDB.manipularBanco(criarTabelaAgendamentos())
+        try:
+            resultadoCliente = barbeariaDB.manipularBanco(criarTabelaClientes())
+            resultadoProduto = barbeariaDB.manipularBanco(criarTabelaProdutos())
+            resultadoVendas = barbeariaDB.manipularBanco(criarTabelaVendas())
+            resultadoItens = barbeariaDB.manipularBanco(criarTabelaItens())
+            resultadoAgendamento = barbeariaDB.manipularBanco(criarTabelaAgendamentos())
 
-        resultados = bool(resultadoCliente) and bool(resultadoProduto) and bool(resultadoAgendamento) and bool(resultadoVendas) and bool(resultadoItens)
+            resultados = bool(resultadoCliente) and bool(resultadoProduto) and bool(resultadoAgendamento) and bool(resultadoVendas) and bool(resultadoItens)
 
-        if resultados:
-            print("tabelas criada")
-            statusTabela = { "status" : "criada" }
-            with open("control\statusTabelas.json", 'w') as arquivoJson:
-                json.dump(statusTabela , arquivoJson, indent=2)
-        else:
-            print("Todas as tabelas já foram criadas ou erro, verfique o banco de dados")
+            if resultados:
+                print("tabelas criada")
+                statusTabela = { "status" : "criada" }
+                with open("control\statusTabelas.json", 'w') as arquivoJson:
+                    json.dump(statusTabela , arquivoJson, indent=2)
+            else:
+                print("verfique o banco de dados")
+        except:
+            print("verfique o banco de dados")
 
 def criarTabelaClientes():
     sql ='''CREATE TABLE "clientes" (

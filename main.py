@@ -65,7 +65,24 @@ while op != "0":
         case "6":
             sqlAgenda = agenda.verAgenda()
             resultado = barbeariaDB.consultarBanco(sqlAgenda)
-            listaHoraAgenda = mensagemListaAgenda(resultado)
+            _ , listaIdAgenda = mensagemListaAgenda(resultado)
+            delOrUp = mensagemEscolherDeletarOuAtualizarAgenda()
+            if delOrUp == "Atualizar":
+                opcaoID = mensagemAtualizarAgenda(listaIdAgenda)
+                if opcaoID:
+                    sqlUpdate = agenda.atualizarAgenda(opcaoID)
+                    if sqlUpdate:
+                        resultado = barbeariaDB.manipularBanco(sqlUpdate)
+                        mensagemDeConfirmacao(resultado)
+            elif delOrUp == "Deletar":
+                opcaoID = mensagemDeletarAgenda(listaIdAgenda)
+                if opcaoID:
+                    sqlDelete = agenda.deletarAgenda(opcaoID)
+                    if sqlDelete:
+                        resultado = barbeariaDB.manipularBanco(sqlDelete)
+                        mensagemDeConfirmacao(resultado)
+            else:
+                pass
         case "7":
             sqlProduto = produto.verProduto()
             resultado = barbeariaDB.consultarBanco(sqlProduto)
