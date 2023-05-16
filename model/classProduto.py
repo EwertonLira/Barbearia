@@ -35,7 +35,9 @@ class Produtos:
     def atualizarProduto(self, produtoID):   
         opCampo = "a"
         while not(opCampo in "1|2|3|4|0"):
-            print('''qual campo deseja atualizar do produto?
+            print('''
+            qual campo deseja atualizar do produto?
+            
             [1] 🔤 Nome
             [2] 🏷️ Preço
             [3] 🧮 Quantidade
@@ -52,17 +54,17 @@ class Produtos:
                         WHERE "produto_id" = '{produtoID}';
                         '''
                 case "2":
-                    self._telefone = input("Insira o preço do produto: ")
+                    self._preco = input("Insira o preço do produto: ")
                     sql = f'''
                         UPDATE "produtos"
-                        "produto_preco" = '{self._preco}'
+                        SET "produto_preco" = '{self._preco}'
                         WHERE "produto_id" = '{produtoID}';
                         '''
                 case "3":
-                    self._email = input("Insira a quantidade do produto: ")
+                    self._quantidade = input("Insira a quantidade do produto: ")
                     sql = f'''
                         UPDATE "produtos"
-                        "produto_quantidade" = '{self._quantidade}
+                        SET "produto_quantidade" = '{self._quantidade}'
                         WHERE "produto_id" = '{produtoID}';
                         '''
                 case "4":
@@ -81,3 +83,10 @@ class Produtos:
                     input("aperte [Enter↵] para continuar")
 
             return sql
+    
+    def deletarProduto(self,produtoID):
+        sql = f''' DELETE 
+    FROM "produtos"
+    WHERE "produto_id" = '{produtoID}';
+    '''
+        return sql

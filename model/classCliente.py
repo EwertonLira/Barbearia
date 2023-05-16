@@ -33,7 +33,9 @@ class Clientes:
     def atualizarCliente(self, clienteID):   
         opCampo = "a"
         while not(opCampo in "1|2|3|4|0"):
-            print('''qual campo deseja atualizar do Cliente?
+            print('''
+            qual campo deseja atualizar do Cliente?
+            
             [1] 🔤 Nome
             [2] 📱 Telefone
             [3] 📧 Email
@@ -53,14 +55,14 @@ class Clientes:
                     self._telefone = input("Insira o número de telefone do cliente: ")
                     sql = f'''
                         UPDATE "clientes"
-                        "cliente_telefone" = '{self._telefone}'
+                        SET "cliente_telefone" = '{self._telefone}'
                         WHERE "cliente_id" = '{clienteID}';
                         '''
                 case "3":
                     self._email = input("Insira o email do cliente: ")
                     sql = f'''
                         UPDATE "clientes"
-                        "cliente_email" = '{self._email}
+                        SET "cliente_email" = '{self._email}'
                         WHERE "cliente_id" = '{clienteID}';
                         '''
                 case "4":
@@ -79,3 +81,10 @@ class Clientes:
                     input("aperte [Enter↵] para continuar")
 
             return sql
+    
+    def deletarCliente(self,clienteID):
+        sql = f''' DELETE 
+    FROM "clientes"
+    WHERE "cliente_id" = '{clienteID}';
+    '''
+        return sql

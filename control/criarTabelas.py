@@ -1,5 +1,32 @@
 # arquivo python que gera arquivos de texto SQL para criar tabelas
 # essas funções devem ser usado com a conexão banco.
+import json
+
+def CriarTodasTabelas(barbeariaDB):
+    # função só funciona uma vez depois buga.
+    # esta função serve para criar todas as tabelas que existe nesse arquivo. precisa importar classConexão e json
+    try:
+        with open("control\statusTabelas.json", 'r') as arquivoJson:
+            chave = json.load(arquivoJson)
+    
+        if chave["status"] == "criada":
+            pass
+    except:
+        resultadoCliente = barbeariaDB.manipularBanco(criarTabelaClientes())
+        resultadoProduto = barbeariaDB.manipularBanco(criarTabelaProdutos())
+        resultadoVendas = barbeariaDB.manipularBanco(criarTabelaVendas())
+        resultadoItens = barbeariaDB.manipularBanco(criarTabelaItens())
+        resultadoAgendamento = barbeariaDB.manipularBanco(criarTabelaAgendamentos())
+
+        resultados = bool(resultadoCliente) and bool(resultadoProduto) and bool(resultadoAgendamento) and bool(resultadoVendas) and bool(resultadoItens)
+
+        if resultados:
+            print("tabelas criada")
+            statusTabela = { "status" : "criada" }
+            with open("control\statusTabelas.json", 'w') as arquivoJson:
+                json.dump(statusTabela , arquivoJson, indent=2)
+        else:
+            print("Todas as tabelas já foram criadas ou erro, verfique o banco de dados")
 
 def criarTabelaClientes():
     sql ='''CREATE TABLE "clientes" (
@@ -21,64 +48,13 @@ def criarTabelaProdutos():
     '''
     return sql
 
-def criarTabelaServicos():
-    sql = '''CREATE TABLE "servicos" (
-    "servico_id" int GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
-    "servico_nome" varchar(255) NOT NULL,
-    "servico_preco" numeric(6,2) NOT NULL,
-    "servico_tempo_execucao" time NOT NULL
-    );
-    '''
-    return sql
 
 def criarTabelaVendas():
     sql = '''CREATE TABLE "vendas" (
     "venda_id" int GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
     "cliente_id" int NOT NULL,
     "produto_id" int ,
-    "servico_id" int ,
-    "venda_horario" timestamp DEFAULT CURRENT_TIMESTAMP(0)
-    CONSTRAINT fk_cliente
-        FOREIGN KEY ("cliente_id")
-        REFERENCES "clientes"("cliente_id"),
-    
-    CONSTRAINT fk_produto
-        FOREIGN KEY ("produto_id")
-        REFERENCES "produtos"("produto_id")
-    
-    CONSTRAINT fk_servico
-        FOREIGN KEY ("servico_id")
-        REFERENCES "servicos"("servico_id")
-    );
-    '''
-    return sql
-
-# criarTabelavendaserviço caso a tabelavenda não de certo por causas das duas chaves estrangeiras.
-def criarTabelaVendasServico():
-    sql = '''CREATE TABLE "vendas" (
-    "venda_id" int GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
-    "cliente_id" int NOT NULL,
-    "servico_id" int ,
-    "venda_horario" timestamp DEFAULT CURRENT_TIMESTAMP(0)
-    CONSTRAINT fk_cliente
-        FOREIGN KEY ("cliente_id")
-        REFERENCES "clientes"("cliente_id"),
-    
-    CONSTRAINT fk_servico
-        FOREIGN KEY ("servico_id")
-        REFERENCES "servicos"("servico_id")
-    );
-    '''
-    return sql
-
-# criartabelaVendasProduto foi feita caso a criartabelaVendas com duas chaves estrangeiras
-# então será criada duas outras tabelas vendas: criartabelavendasProduto e criartabelavendasServiços 
-def criarTabelaVendasProduto():
-    sql = '''CREATE TABLE "vendas" (
-    "venda_id" int GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
-    "cliente_id" int NOT NULL,
-    "produto_id" int ,
-    "venda_horario" timestamp DEFAULT CURRENT_TIMESTAMP(0)
+    "venda_horario" timestamp DEFAULT CURRENT_TIMESTAMP(0),
     CONSTRAINT fk_cliente
         FOREIGN KEY ("cliente_id")
         REFERENCES "clientes"("cliente_id"),
@@ -90,13 +66,14 @@ def criarTabelaVendasProduto():
     );
     '''
     return sql
+
 
 def criarTabelaItens():
     sql = '''CREATE TABLE "itens" (
     "item_id" int GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
     "venda_id" int,
     "item_descricao" varchar(255),
-    "item_quantidade" varchar(255)
+    "item_quantidade" varchar(255),
     CONSTRAINT fk_vendas
         FOREIGN KEY ("venda_id")
         REFERENCES "vendas"("venda_id")
@@ -108,16 +85,62 @@ def criarTabelaAgendamentos():
     sql ='''CREATE TABLE "agendamentos" (
     "agendamento_id" int GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
     "cliente_id" int NOT NULL,
-    "servico_id" int NOT NULL,
-    "agendamento_horario" timestamp DEFAULT CURRENT_TIMESTAMP(0)
+    "produto_id" int NOT NULL,
+    "agendamento_horario" varchar(255),
     
     CONSTRAINT fk_cliente
         FOREIGN KEY ("cliente_id")
         REFERENCES "clientes"("cliente_id"),
     
-    CONSTRAINT fk_servico
-        FOREIGN KEY ("servico_id")
-        REFERENCES "servicos"("servico_id")
+    CONSTRAINT fk_produto
+        FOREIGN KEY ("produto_id")
+        REFERENCES "produtos"("produto_id")
     );
     '''
     return sql
+
+# _______________tabelas que não serão mais usadas_____________
+# def criarTabelaServicos():
+#     sql = '''CREATE TABLE "servicos" (
+#     "servico_id" int GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
+#     "servico_nome" varchar(255) NOT NULL,
+#     "servico_preco" numeric(6,2) NOT NULL,
+#     "servico_tempo_execucao" time NOT NULL
+#     );
+#     '''
+#     return sql
+#
+# def criarTabelaVendasProduto():
+#     sql = '''CREATE TABLE "vendas" (
+#     "venda_id" int GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
+#     "cliente_id" int NOT NULL,
+#     "produto_id" int ,
+#     "venda_horario" timestamp DEFAULT CURRENT_TIMESTAMP(0)
+#     CONSTRAINT fk_cliente
+#         FOREIGN KEY ("cliente_id")
+#         REFERENCES "clientes"("cliente_id"),
+    
+#     CONSTRAINT fk_produto
+#         FOREIGN KEY ("produto_id")
+#         REFERENCES "produtos"("produto_id")
+    
+#     );
+#     '''
+#     return sql
+
+# def criarTabelaVendasServico():
+#     sql = '''CREATE TABLE "vendas" (
+#     "venda_id" int GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
+#     "cliente_id" int NOT NULL,
+#     "servico_id" int ,
+#     "venda_horario" timestamp DEFAULT CURRENT_TIMESTAMP(0)
+#     CONSTRAINT fk_cliente
+#         FOREIGN KEY ("cliente_id")
+#         REFERENCES "clientes"("cliente_id"),
+    
+#     CONSTRAINT fk_servico
+#         FOREIGN KEY ("servico_id")
+#         REFERENCES "servicos"("servico_id")
+#     );
+#     '''
+#     return sql
