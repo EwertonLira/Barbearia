@@ -19,15 +19,9 @@ def CriarTodasTabelas(barbeariaDB):
             resultadoItens = barbeariaDB.manipularBanco(criarTabelaItens())
             resultadoAgendamento = barbeariaDB.manipularBanco(criarTabelaAgendamentos())
 
-            resultados = bool(resultadoCliente) and bool(resultadoProduto) and bool(resultadoAgendamento) and bool(resultadoVendas) and bool(resultadoItens)
-
-            if resultados:
-                print("tabelas criada")
-                statusTabela = { "status" : "criada" }
-                with open("control\statusTabelas.json", 'w') as arquivoJson:
-                    json.dump(statusTabela , arquivoJson, indent=2)
-            else:
-                print("verfique o banco de dados")
+            statusTabela = { "status" : "criada" }
+            with open("control\statusTabelas.json", 'w') as arquivoJson:
+                json.dump(statusTabela , arquivoJson, indent=2)
         except:
             print("verfique o banco de dados")
 
@@ -56,16 +50,10 @@ def criarTabelaVendas():
     sql = '''CREATE TABLE "vendas" (
     "venda_id" int GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
     "cliente_id" int NOT NULL,
-    "produto_id" int ,
     "venda_horario" timestamp DEFAULT CURRENT_TIMESTAMP(0),
     CONSTRAINT fk_cliente
         FOREIGN KEY ("cliente_id")
-        REFERENCES "clientes"("cliente_id"),
-    
-    CONSTRAINT fk_produto
-        FOREIGN KEY ("produto_id")
-        REFERENCES "produtos"("produto_id")
-    
+        REFERENCES "clientes"("cliente_id")
     );
     '''
     return sql
@@ -75,11 +63,14 @@ def criarTabelaItens():
     sql = '''CREATE TABLE "itens" (
     "item_id" int GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
     "venda_id" int,
-    "item_descricao" varchar(255),
-    "item_quantidade" varchar(255),
+    "produto_id" int,
+    "item_quantidade" int,
     CONSTRAINT fk_vendas
         FOREIGN KEY ("venda_id")
-        REFERENCES "vendas"("venda_id")
+        REFERENCES "vendas"("venda_id"),
+    CONSTRAINT fk_produto
+        FOREIGN KEY ("produto_id")
+        REFERENCES "produtos"("produto_id")
     );
     '''
     return sql

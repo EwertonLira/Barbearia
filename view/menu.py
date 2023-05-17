@@ -377,3 +377,22 @@ confirma deletar algum horário da agenda? Digite [1]Sim ou [0]Não.
     return opcao
 
 
+# ________________ Trecho relacionado a vendas ________________________________
+
+def mensagemVenda(frases):
+    
+    match frases:
+        case "fraseI":
+            print("escolha qual produto será vendido")
+            opcao = None
+        case "fraseII":
+            print("Escolha o ID do produto a ser vendido")
+            opcao = input(": ")
+        case "fraseIII":
+            print("Escolha a quantidade a ser vendida.")
+            opcao = input(": ")
+        case "fraseIV":
+            print("Escolha o ID do cliente")
+            opcao = input(": ")
+    
+    return opcao

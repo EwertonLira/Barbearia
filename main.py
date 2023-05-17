@@ -9,12 +9,12 @@ from model.classVenda import *
 from view.menu import *
 #_______________________ instanciar classes _____________________
 
-barbeariaDB = Conexao("barbearia","localhost","5432","postgres","postgres")
+barbeariaDB = Conexao("barbearia","localhost","5432","postgres","postgre")
 agenda = Agendamentos()
 cliente = Clientes()
 item = Itens()
 produto = Produtos()
-Venda = Vendas()
+venda = Vendas()
 
 CriarTodasTabelas(barbeariaDB)
 #_______________________ início do while _____________________
@@ -40,7 +40,27 @@ while op != "0":
             resultado = barbeariaDB.manipularBanco(sqlProduto)
             mensagemDeConfirmacao(resultado)
         case "4":
-            pass
+            mensagemVenda("fraseI")
+            sqlProduto = produto.verProduto()
+            resultado = barbeariaDB.consultarBanco(sqlProduto)
+            listaIdProdutos = mensagemListaProdutos(resultado)
+            idProduto = mensagemVenda("fraseII")
+            qtdProdutos = mensagemVenda("fraseIII")
+            sqlCliente = cliente.verCliente()
+            resultado = barbeariaDB.consultarBanco(sqlCliente)
+            listaIdClientes = mensagemListaClientes(resultado) 
+            idCliente = mensagemVenda("fraseIV")
+            venda.setVendaCliente(idCliente)
+            sqlVenda = venda.ExecutarVenda()
+            barbeariaDB.manipularBanco(sqlVenda)
+
+            
+            item.setQuantidade(qtdProdutos)
+
+
+            
+
+
         case "5":
             sqlCliente = cliente.verCliente()
             resultado = barbeariaDB.consultarBanco(sqlCliente)

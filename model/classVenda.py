@@ -1,9 +1,18 @@
+from datetime import *
+
 class Vendas:
     def __init__(self):
         self._id = "id"
         self._clienteID = "clienteID"
-        self._produtoID = "produtoID"
-        self._servicoID = "servicoID"
-        self._nome = "nome"
-        self._preco = "preco"
-        self._tempoExecucao = "tempoExecucao"
+        self._horaVenda = datetime.today()
+    
+    def setVendaCliente(self, IdCliente):
+        self._clienteID = IdCliente
+
+    def ExecutarVenda(self): 
+        
+        sql = f'''
+        INSERT INTO "itens"
+        Values(default, '{self._clienteID}', '{self._horaVenda}')
+        '''
+        return sql
