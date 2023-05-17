@@ -1,24 +1,23 @@
 # sistema de gerenciamento de barbearia
 from control.classConexao import *
 from control.criarTabelas import *
+from model.classAgenda import *
 from model.classCliente import *
+from model.classItem import *
+from model.classProduto import *
+from model.classVenda import *
 from view.menu import *
-
 #_______________________ instanciar classes _____________________
 
 barbeariaDB = Conexao("barbearia","localhost","5432","postgres","postgres")
+agenda = Agendamentos()
 cliente = Clientes()
+item = Itens()
+produto = Produtos()
+Venda = Vendas()
 
-
-#_______________________ instanciar classes _____________________
-
-# tabela cliente foi criada, foi colocada em comentário para não gerar um erro
-# 
-# resultado = barbeariaDB.manipularBanco(criarTabelaClientes())
-# if resultado:
-#     print("tabela cliente criada")
-# else:
-#     print("erro ao tentar criar a tabela cliente")
+CriarTodasTabelas(barbeariaDB)
+#_______________________ início do while _____________________
 
 op = True
 while op != "0":
@@ -28,27 +27,83 @@ while op != "0":
         case "1": 
             sqlCliente= cliente.inserirNovoCliente()
             resultado = barbeariaDB.manipularBanco(sqlCliente)
-            mensagemDeconfirmacao(resultado)
+            mensagemDeConfirmacao(resultado)
         case "2":
-            pass
+            sqlAgenda = agenda.verAgenda()
+            resultado = barbeariaDB.consultarBanco(sqlAgenda)
+            listaHorasAgenda = agenda.ListaHorariosAgenda(resultado)
+            sqlAgenda = agenda.marcarHora(listaHorasAgenda)
+            resultado = barbeariaDB.manipularBanco(sqlAgenda)
+            mensagemDeConfirmacao(resultado)
         case "3":
-            pass
+            sqlProduto = produto.inserirNovoProduto()
+            resultado = barbeariaDB.manipularBanco(sqlProduto)
+            mensagemDeConfirmacao(resultado)
         case "4":
             pass
         case "5":
             sqlCliente = cliente.verCliente()
             resultado = barbeariaDB.consultarBanco(sqlCliente)
-            
-            visualizarListaClientes(resultado)      
-            opcaoID = input("Digite o ID do Cliente a ser atualizado: ")
-            
-            sqlUpdate = cliente.atualizarCliente(opcaoID)
-            resultado = barbeariaDB.manipularBanco(sqlUpdate)
-            mensagemDeconfirmacao(resultado)
+            listaIdClientes = mensagemListaClientes(resultado)      
+            delOrUP = mensagemEscolherDeletarOuAtualizarCliente()
+            if delOrUP == "Atualizar":
+                opcaoID = mensagemAtualizarCliente(listaIdClientes)
+                if opcaoID:
+                    sqlUpdate = cliente.atualizarCliente(opcaoID)
+                    if sqlUpdate:
+                        resultado = barbeariaDB.manipularBanco(sqlUpdate)
+                        mensagemDeConfirmacao(resultado)
+            elif delOrUP == "Deletar":
+                opcaoID = mensagemDeletarCliente(listaIdClientes)
+                if opcaoID:
+                    sqlDelete = cliente.deletarCliente(opcaoID)
+                    if sqlDelete:
+                        resultado = barbeariaDB.manipularBanco(sqlDelete)
+                        mensagemDeConfirmacao(resultado)
+            else:
+                pass
         case "6":
-            pass
+            sqlAgenda = agenda.verAgenda()
+            resultado = barbeariaDB.consultarBanco(sqlAgenda)
+            _ , listaIdAgenda = mensagemListaAgenda(resultado)
+            delOrUp = mensagemEscolherDeletarOuAtualizarAgenda()
+            if delOrUp == "Atualizar":
+                opcaoID = mensagemAtualizarAgenda(listaIdAgenda)
+                if opcaoID:
+                    sqlUpdate = agenda.atualizarAgenda(opcaoID)
+                    if sqlUpdate:
+                        resultado = barbeariaDB.manipularBanco(sqlUpdate)
+                        mensagemDeConfirmacao(resultado)
+            elif delOrUp == "Deletar":
+                opcaoID = mensagemDeletarAgenda(listaIdAgenda)
+                if opcaoID:
+                    sqlDelete = agenda.deletarAgenda(opcaoID)
+                    if sqlDelete:
+                        resultado = barbeariaDB.manipularBanco(sqlDelete)
+                        mensagemDeConfirmacao(resultado)
+            else:
+                pass
         case "7":
-            pass
+            sqlProduto = produto.verProduto()
+            resultado = barbeariaDB.consultarBanco(sqlProduto)
+            listaIdProdutos = mensagemListaProdutos(resultado)     
+            delOrUP = mensagemEscolherDeletarOuAtualizarProduto() 
+            if delOrUP == "Atualizar": 
+                opcaoID = mensagemAtualizarProduto(listaIdProdutos)
+                if opcaoID:
+                    sqlUpdate = produto.atualizarProduto(opcaoID)
+                    if sqlUpdate:
+                        resultado = barbeariaDB.manipularBanco(sqlUpdate)
+                        mensagemDeConfirmacao(resultado)
+            elif delOrUP == "Deletar":
+                opcaoID = mensagemDeletarProduto(listaIdClientes)
+                if opcaoID:
+                    sqlDelete = produto.deletarProduto(opcaoID)
+                    if sqlDelete:
+                        resultado = barbeariaDB.manipularBanco(sqlDelete)
+                        mensagemDeConfirmacao(resultado)
+            else:
+                pass
         case "8":
             pass
 

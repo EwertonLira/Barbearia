@@ -31,69 +31,60 @@ class Clientes:
         return sql
 
     def atualizarCliente(self, clienteID):   
-        
-        self._inputCliente()
-        
-        sql = f'''
-        UPDATE "clientes"
-        SET "cliente_nome" = '{self._nome}',
-            "cliente_telefone" = '{self._telefone}',
-            "cliente_email" = '{self._email}'
-        WHERE "cliente_id" = '{clienteID}';
-        '''
+        opCampo = "a"
+        while not(opCampo in "1|2|3|4|0"):
+            print('''
+            qual campo deseja atualizar do Cliente?
+            
+            [1] 🔤 Nome
+            [2] 📱 Telefone
+            [3] 📧 Email
+            [4] Todos
+            [0] ↩️ Voltar ao menu principal
+            ''')
+            opCampo = input(": ")
+            match opCampo:
+                case "1":
+                    self._nome = input("Insira o nome do cliente: ")
+                    sql = f'''
+                        UPDATE "clientes"
+                        SET "cliente_nome" = '{self._nome}'
+                        WHERE "cliente_id" = '{clienteID}';
+                        '''
+                case "2":
+                    self._telefone = input("Insira o número de telefone do cliente: ")
+                    sql = f'''
+                        UPDATE "clientes"
+                        SET "cliente_telefone" = '{self._telefone}'
+                        WHERE "cliente_id" = '{clienteID}';
+                        '''
+                case "3":
+                    self._email = input("Insira o email do cliente: ")
+                    sql = f'''
+                        UPDATE "clientes"
+                        SET "cliente_email" = '{self._email}'
+                        WHERE "cliente_id" = '{clienteID}';
+                        '''
+                case "4":
+                    self._inputCliente()
+                    sql = f'''
+                    UPDATE "clientes"
+                    SET "cliente_nome" = '{self._nome}',
+                        "cliente_telefone" = '{self._telefone}',
+                        "cliente_email" = '{self._email}'
+                    WHERE "cliente_id" = '{clienteID}';
+                    '''
+                case "0":
+                    sql = None
+                case _:
+                    print("comando inválido Tente novamente")
+                    input("aperte [Enter↵] para continuar")
+
+            return sql
+    
+    def deletarCliente(self,clienteID):
+        sql = f''' DELETE 
+    FROM "clientes"
+    WHERE "cliente_id" = '{clienteID}';
+    '''
         return sql
-
-
-        
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-class Produtos:
-    def __init__(self, id, nome, preco, quantidade):
-        self._id = id
-        self._nome = nome
-        self._preco = preco
-        self._quantidade = quantidade
-
-class Servicos:
-    def __init__(self, id, nome, preco, tempoExecucao):
-        self._id = id
-        self._nome = nome
-        self._preco = preco
-        self._tempoExecucao = tempoExecucao
-
-class Vendas:
-    def __init__(self, id, clienteID, produtoID, servicoID, nome, preco, tempoExecucao):
-        self._id = id
-        self._clienteID = clienteID
-        self._produtoID = produtoID
-        self._servicoID = servicoID
-        self._nome = nome
-        self._preco = preco
-        self._tempoExecucao = tempoExecucao
-
-class Itens:
-    def __init__(self, id, vendaID, descricao, quantidade):
-        self._id = id
-        self._vendaId = vendaID
-        self._descricao = descricao
-        self._quantidade = quantidade
-
-class Agendamentos:
-    def __init__(self, id, clienteID, servicoID, horario):
-        self._id = id
-        self._clienteID = clienteID
-        self._servicoID = servicoID
-        self._horario = horario
