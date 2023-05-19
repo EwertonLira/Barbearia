@@ -7,10 +7,17 @@ class Itens:
     
     def setQuantidade(self,quantidade):
         self._quantidade = quantidade
+    
+    def setProdutoId(self,produtoID):
+        self._produtoId = produtoID
+
+    def setVendaId(self,listaIdVendas):
+        self._vendaId = listaIdVendas[-1]
+
 
     def criarItem(self,):
         sql = f'''
-        INSERT INTO "vendas"
-        Values(default, '{self._produtoId}', '{self._vendaId}', '{self._quantidade}')
+        INSERT INTO "itens"
+        Values(default, '{self._vendaId}', '{self._produtoId}', '{self._quantidade}')
         '''
         return sql

@@ -392,7 +392,32 @@ def mensagemVenda(frases):
             print("Escolha a quantidade a ser vendida.")
             opcao = input(": ")
         case "fraseIV":
+            op = "rodarWhile"
+            while op != "sair":
+                print("""
+Deseja Adicionar outro Item a compra? Digite [1]Sim ou [0]Não.
+
+[1] Sim
+[0] Não
+""")
+                opcao = input(": ")
+                match opcao:
+                    case "1" | "0":
+                        op = "sair"
+                        opcao
+                    case _:
+                        print("comando inválido, tente novamente")
+                        input("aperte [Enter↵] para continuar")
+        case "fraseV":
             print("Escolha o ID do cliente")
             opcao = input(": ")
-    
     return opcao
+
+def mensagemListaVendas(resultado):
+    listaIdVendas = []
+    print("id | IDCliente |horario")
+    for venda in resultado:
+        print(f"{venda[0]} | {venda[1]} | {venda[2]} ")
+        listaIdVendas.append(venda[0])
+    
+    return listaIdVendas

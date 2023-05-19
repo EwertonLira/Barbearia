@@ -12,7 +12,14 @@ class Vendas:
     def ExecutarVenda(self): 
         
         sql = f'''
-        INSERT INTO "itens"
+        INSERT INTO "vendas"
         Values(default, '{self._clienteID}', '{self._horaVenda}')
+        '''
+        return sql
+
+    def verVenda(self):
+        sql = f'''
+        SELECT * FROM "vendas"
+        ORDER BY "venda_id" ASC
         '''
         return sql

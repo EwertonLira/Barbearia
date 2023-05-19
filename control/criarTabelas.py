@@ -50,7 +50,7 @@ def criarTabelaVendas():
     sql = '''CREATE TABLE "vendas" (
     "venda_id" int GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
     "cliente_id" int NOT NULL,
-    "venda_horario" timestamp DEFAULT CURRENT_TIMESTAMP(0),
+    "venda_horario" varchar(255) NOT NULL,
     CONSTRAINT fk_cliente
         FOREIGN KEY ("cliente_id")
         REFERENCES "clientes"("cliente_id")
@@ -92,49 +92,3 @@ def criarTabelaAgendamentos():
     );
     '''
     return sql
-
-# _______________tabelas que não serão mais usadas_____________
-# def criarTabelaServicos():
-#     sql = '''CREATE TABLE "servicos" (
-#     "servico_id" int GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
-#     "servico_nome" varchar(255) NOT NULL,
-#     "servico_preco" numeric(6,2) NOT NULL,
-#     "servico_tempo_execucao" time NOT NULL
-#     );
-#     '''
-#     return sql
-#
-# def criarTabelaVendasProduto():
-#     sql = '''CREATE TABLE "vendas" (
-#     "venda_id" int GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
-#     "cliente_id" int NOT NULL,
-#     "produto_id" int ,
-#     "venda_horario" timestamp DEFAULT CURRENT_TIMESTAMP(0)
-#     CONSTRAINT fk_cliente
-#         FOREIGN KEY ("cliente_id")
-#         REFERENCES "clientes"("cliente_id"),
-    
-#     CONSTRAINT fk_produto
-#         FOREIGN KEY ("produto_id")
-#         REFERENCES "produtos"("produto_id")
-    
-#     );
-#     '''
-#     return sql
-
-# def criarTabelaVendasServico():
-#     sql = '''CREATE TABLE "vendas" (
-#     "venda_id" int GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
-#     "cliente_id" int NOT NULL,
-#     "servico_id" int ,
-#     "venda_horario" timestamp DEFAULT CURRENT_TIMESTAMP(0)
-#     CONSTRAINT fk_cliente
-#         FOREIGN KEY ("cliente_id")
-#         REFERENCES "clientes"("cliente_id"),
-    
-#     CONSTRAINT fk_servico
-#         FOREIGN KEY ("servico_id")
-#         REFERENCES "servicos"("servico_id")
-#     );
-#     '''
-#     return sql

@@ -15,7 +15,7 @@ class Clientes:
         # ideia! talvez mudar o ordenamento da lista por nome(ordem alfabética) do que por ID
         sql = f'''
         SELECT * FROM "clientes"
-        ORDER BY "cliente_nome" ASC
+        ORDER BY "cliente_id" ASC
         '''
         return sql
 
