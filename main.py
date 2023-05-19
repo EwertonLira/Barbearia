@@ -7,9 +7,10 @@ from model.classItem import *
 from model.classProduto import *
 from model.classVenda import *
 from view.menu import *
+
 #_______________________ instanciar classes _____________________
 
-barbeariaDB = Conexao("barbearia","localhost","5432","postgres","postgres")
+barbeariaDB = Conexao("barbearia","localhost","5432","postgres","postgre")
 agenda = Agendamentos()
 cliente = Clientes()
 item = Itens()
@@ -49,7 +50,7 @@ while op != "0":
             barbeariaDB.manipularBanco(sqlVenda)
             sqlVenda = venda.verVenda()
             resultadoV = barbeariaDB.consultarBanco(sqlVenda)
-            listaIdvendas = mensagemListaVendas(resultadoV)
+            listaIdvendas = mensagemListaVendas(resultadoV,1,barbeariaDB)
             item.setVendaId(listaIdvendas)
             opCase4 = "rodarWhile"
             while opCase4 != "0":
@@ -129,16 +130,21 @@ while op != "0":
             else:
                 pass
         case "8":
+            
             sqlVenda = venda.verVenda()
             resultadoV = barbeariaDB.consultarBanco(sqlVenda)
-            listaIdvendas = mensagemListaVendas(resultadoV)
+            listaIdvendas = mensagemListaVendas(resultadoV,2,barbeariaDB)
             
+            #NomeCliente = buscarDadosEmTabela(barbeariaDB,"clientes","1",'cliente_nome')
+            
+            #print(listaDados)
+
             
             input("o que deseja fazer agora?")
 
 print("Obrigado por usar o sysBarber!")        
 
-        
+
 
 
 

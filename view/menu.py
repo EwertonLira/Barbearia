@@ -6,15 +6,15 @@ def visualizarMenu():
 Sistema de gerenciamento de barbearia na palma da mão:
 Escolha uma das opções[] abaixo e tecle [Enter↵]
 
-[1] 📝👪 Cadastrar clientes
-[2] 📝🗓️ Agendamento de serviço
-[3] 📝📦 Cadastrar produto
-[4] 📝💰 Efetuar venda
-[5] 👀👪 Visualizar lista de clientes
-[6] 👀🗓️️ Visualizar lista de agendamentos
-[7] 👀📦 Visualizar lista de produtos
-[8] 👀💰 Visualiazar lista de  venda
-[0] 🚪 Sair
+[1]📝👪 Cadastrar clientes
+[2]📝🗓️ Agendamento de serviço
+[3]📝📦 Cadastrar produto
+[4]📝💰 Efetuar venda
+[5]👀👪 Visualizar lista de clientes
+[6]👀🗓️️ Visualizar lista de agendamentos
+[7]👀📦 Visualizar lista de produtos
+[8]👀💰 Visualiazar lista de  venda
+[0]🚪 Sair
     ''')
 
     op = input(": ")
@@ -34,8 +34,19 @@ def mensagemDeConfirmacao(resultado):
         print("O registro falhou")
         input("aperte [Enter↵] para continuar")
 
+def buscarDadosEmTabela(bancoDeDados, nomeTabela, nomeColuna, id):
+   
+    item = bancoDeDados.consultarBanco(f"""
+    Select * from "{nomeTabela}"
+    where "{nomeColuna}" = '{id}'
+    """)
+
+    return item
+
 
 # ______________________ trechos de código relacionados a clientes _______________
+#_________________________________________________________________________________
+
 def mensagemListaClientes(resultado):
     listaIdClientes = []
     print("id | nome | telefone | email")
@@ -147,6 +158,7 @@ confirma deletar algum cliente? Digite [1]Sim ou [0]Não.
     return opcao
 
 #______________________ trechos de código relacionados a Produto ___________________
+#____________________________________________________________________________________
 def mensagemListaProdutos(resultado):
     listaIdProdutos = []
     print("id | nome | preço | quantidade")
@@ -258,6 +270,8 @@ Deseja deletar algum Produto? Digite [1]Sim ou [0]Não.
     return opcao
 
 # __________________________ trecho de códigos da agenda ______________________
+#____________________________________________________________________________________
+
 
 def mensagemListaAgenda(resultado):
     listaHorasAgenda = []
@@ -378,6 +392,7 @@ confirma deletar algum horário da agenda? Digite [1]Sim ou [0]Não.
 
 
 # ________________ Trecho relacionado a vendas ________________________________
+#____________________________________________________________________________________
 
 def mensagemVenda(frases):
     
@@ -413,11 +428,47 @@ Deseja Adicionar outro Item a compra? Digite [1]Sim ou [0]Não.
             opcao = input(": ")
     return opcao
 
-def mensagemListaVendas(resultado):
-    listaIdVendas = []
-    print("id | IDCliente |horario")
-    for venda in resultado:
-        print(f"{venda[0]} | {venda[1]} | {venda[2]} ")
-        listaIdVendas.append(venda[0])
+def mensagemListaVendas(resultado,opcaoPrint,bancoDeDados):
+    if 1 == opcaoPrint:
+        listaIdVendas = []
+        print("id | IDCliente |horario")
+        for venda in resultado:
+            print(f"{venda[0]} | {venda[1]} | {venda[2]} ")
+            listaIdVendas.append(venda[0])
     
+    elif 2 == opcaoPrint:
+        listaIdVendas = []
+        somaValores = 0
+        for venda in resultado:
+            print(f"horário da venda: {venda[2]}")
+            
+            listaCliente = buscarDadosEmTabela(bancoDeDados,"clientes",'cliente_id',f"{venda[1]}")
+            print(f"Nome do cliente: {listaCliente[0][1]}",)
+
+            itensDaVenda = buscarDadosEmTabela(bancoDeDados,"itens","venda_id",f"{venda[0]}")
+            subTotalCliente = 0
+            print("qtd * produto (Valor do produto) sub Total")
+            for item in itensDaVenda:
+                # item_ID | venda_ID | produto_ID | item_quantidade
+                print("",item[3], end=" *") # quantidade Vendida, esse ""no print serve para organização do texto
+                
+                listaProduto = buscarDadosEmTabela(bancoDeDados,"produtos","produto_id",f"{item[2]}")
+                # produto_id | produto_nome | produto_preco | produto_quantidade
+                subTotalItem = item[3] * listaProduto[0][2]
+                subTotalCliente += subTotalItem
+                print(listaProduto[0][1],"(",listaProduto[0][2],")",subTotalItem) # nome, preço, subtotal
+
+            print("valor total da compra do cliente:",subTotalCliente)
+            print("____________________________________________") # pular uma linha
+            somaValores += subTotalCliente
+            subTotalCliente = 0
+
+        print("valor total arrecadado",somaValores)
+        somaValores = 0
+
+    else:
+        print("comando inválido")
+
     return listaIdVendas
+
+

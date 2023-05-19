@@ -25,6 +25,8 @@ def CriarTodasTabelas(barbeariaDB):
         except:
             print("verfique o banco de dados")
 
+#__________________ tabelas sql __________________________
+
 def criarTabelaClientes():
     sql ='''CREATE TABLE "clientes" (
     "cliente_id" int GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
