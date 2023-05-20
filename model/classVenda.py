@@ -4,8 +4,14 @@ class Vendas:
     def __init__(self):
         self._id = "id"
         self._clienteID = "clienteID"
-        self._horaVenda = datetime.today()
+        self._horaVenda = "hora"
     
+    def _setHoraVenda(self):
+        horaVenda = datetime.now()
+        return horaVenda
+
+
+
     def setVendaCliente(self, IdCliente):
         self._clienteID = IdCliente
 
@@ -13,7 +19,7 @@ class Vendas:
         
         sql = f'''
         INSERT INTO "vendas"
-        Values(default, '{self._clienteID}', '{self._horaVenda}')
+        Values(default, '{self._clienteID}', '{self._setHoraVenda()}')
         '''
         return sql
 
@@ -22,4 +28,11 @@ class Vendas:
         SELECT * FROM "vendas"
         ORDER BY "venda_id" ASC
         '''
+        return sql
+    
+    def deletarVenda(self,vendaID):
+        sql = f''' DELETE 
+    FROM "vendas"
+    WHERE "venda_id" = '{vendaID}';
+    '''
         return sql

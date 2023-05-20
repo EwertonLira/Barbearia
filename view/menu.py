@@ -272,22 +272,64 @@ Deseja deletar algum Produto? Digite [1]Sim ou [0]Não.
 # __________________________ trecho de códigos da agenda ______________________
 #____________________________________________________________________________________
 
+def mensagemAgendamento(frases):
+    
+    match frases:
+        case "fraseI":
+            print("escolha o ID do Cliente")
+            opcao = input(": ")
+        case "fraseII":
+            print("Escolha o ID do serviço")
+            opcao = input(": ")
+    
+    return opcao
 
-def mensagemListaAgenda(resultado):
+
+def mensagemListaAgenda(resultado,bancoDeDados):
     listaHorasAgenda = []
     listaIdAgenda = []
-    print("id |IDCliente| IDServiço | horário ")
+    print("serviços agendados para hoje\n")
     for agendamento in resultado:
-        print(f"{agendamento[0]} | {agendamento[1]} | {agendamento[2]} | {agendamento[3]}")
         listaHorasAgenda.append(agendamento[3])
         listaIdAgenda.append(agendamento[0])
-    
+        
+        print(f"ID do agendamento: {agendamento[0]}")
+
+        listaCliente = buscarDadosEmTabela(bancoDeDados,"clientes",'cliente_id',f"{agendamento[1]}")
+        print(f"Nome do cliente: {listaCliente[0][1]}")
+
+        # produto_id | produto_nome | produto_preco | produto_quantidade
+        listaProduto = buscarDadosEmTabela(bancoDeDados,"produtos","produto_id",f"{agendamento[2]}")
+        print("serviço escolhido:",listaProduto[0][1])
+
+        print(f"hora marcada: {agendamento[3]}")
+        print("__________________________________________________")
+
     if listaHorasAgenda:
         pass
     else:
         print("Todos os horários estão diponíveis")
 
     return listaHorasAgenda, listaIdAgenda
+
+def mensagemMarcarHora(objAgenda,listaHorasAgenda):
+        
+        print(f"""
+código | hora | situação
+        """)
+        for indice, hora in enumerate(objAgenda._agendaHorarios):
+            if hora in listaHorasAgenda:
+                print(f"🔴[{indice}] {hora} Reservado")
+            else:
+               print(f"🟢[{indice}] {hora} Disponível")
+        
+        op = input("""
+        digite o código do horário:
+        """)
+        for indice, hora in enumerate(objAgenda._agendaHorarios):
+            if str(op) == str(indice):
+               objAgenda._horario = hora
+        
 
 def mensagemEscolherDeletarOuAtualizarAgenda():
     
@@ -325,7 +367,7 @@ confirme atualização da Agenda? Digite [1]Sim ou [0]Não.
 
 [1] Sim
 [0] Não
-""")
+""")    
         op = input(": ")
         match op:
             case "1":
@@ -431,39 +473,37 @@ Deseja Adicionar outro Item a compra? Digite [1]Sim ou [0]Não.
 def mensagemListaVendas(resultado,opcaoPrint,bancoDeDados):
     if 1 == opcaoPrint:
         listaIdVendas = []
-        print("id | IDCliente |horario")
         for venda in resultado:
-            print(f"{venda[0]} | {venda[1]} | {venda[2]} ")
             listaIdVendas.append(venda[0])
     
     elif 2 == opcaoPrint:
         listaIdVendas = []
         somaValores = 0
         for venda in resultado:
-            print(f"horário da venda: {venda[2]}")
+            print(f"ID Venda:[{venda[0]}] horário da venda: {venda[2]}")
             
             listaCliente = buscarDadosEmTabela(bancoDeDados,"clientes",'cliente_id',f"{venda[1]}")
             print(f"Nome do cliente: {listaCliente[0][1]}",)
 
             itensDaVenda = buscarDadosEmTabela(bancoDeDados,"itens","venda_id",f"{venda[0]}")
             subTotalCliente = 0
-            print("qtd * produto (Valor do produto) sub Total")
+            print("qtd * produto ( Valor do produto ) = sub Total")
             for item in itensDaVenda:
                 # item_ID | venda_ID | produto_ID | item_quantidade
-                print("",item[3], end=" *") # quantidade Vendida, esse ""no print serve para organização do texto
+                print("",item[3], end=" * ") # quantidade Vendida, esse ""no print serve para organização do texto
                 
                 listaProduto = buscarDadosEmTabela(bancoDeDados,"produtos","produto_id",f"{item[2]}")
                 # produto_id | produto_nome | produto_preco | produto_quantidade
                 subTotalItem = item[3] * listaProduto[0][2]
                 subTotalCliente += subTotalItem
-                print(listaProduto[0][1],"(",listaProduto[0][2],")",subTotalItem) # nome, preço, subtotal
+                print(listaProduto[0][1],"(",listaProduto[0][2],") =",subTotalItem) # nome, preço, subtotal
 
-            print("valor total da compra do cliente:",subTotalCliente)
+            print("valor total da compra:",subTotalCliente)
             print("____________________________________________") # pular uma linha
             somaValores += subTotalCliente
             subTotalCliente = 0
 
-        print("valor total arrecadado",somaValores)
+        print("\nvalor total arrecadado",somaValores,"\n")
         somaValores = 0
 
     else:
@@ -471,4 +511,63 @@ def mensagemListaVendas(resultado,opcaoPrint,bancoDeDados):
 
     return listaIdVendas
 
+def mensagemEscolherDeletarOuAtualizarVenda():
+    
+    op = "rodarWhile"
+    while not(op in "1|0"): 
+        
+        print("""
+Deseja Deletar alguma Vendas?
+Digite [1]Deletar ou [0]sair.
+    
+    [1] Deletar Vendas
+    [0] sair
+    """)
+        op = input(": ")
+        match op:
+            case "1":
+                opEscolhida = "Deletar"
+            case "0":
+                opEscolhida = False
+            case _:
+                    print("comando inválido, tente novamente")
+                    input("aperte [Enter↵] para continuar")
+        
+    return opEscolhida
 
+def mensagemDeletarVenda(listaIdVendas):
+    
+    op = "rodarWhile"
+    while not(op in "1|0"):
+        print("""
+Deseja deletar alguma Venda? Digite [1]Sim ou [0]Não.
+
+[1] Sim
+[0] Não
+""")
+        op = input(": ")
+        match op:
+            case "1":
+                opcao = 0
+                while not(opcao in listaIdVendas):
+                    print("Digite o ID da Venda a ser apagada:")          
+                    try:
+                        opcao = int(input(": "))                
+                        if opcao in listaIdVendas:
+                            pass
+                        else:
+                            print("ID da Venda não existe")
+                            print("Voltando ao menu principal")
+                            input("aperte [Enter↵] para continuar")
+                            opcao = False
+                            break
+                    except:
+                        print("comando invalido. Tente novamente")
+            case "0":
+                opcao = False
+            case _:
+                print("comando inválido, tente novamente")
+                input("aperte [Enter↵] para continuar")
+                op = "rodarWhile"
+        
+    return opcao

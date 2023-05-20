@@ -56,6 +56,7 @@ def criarTabelaVendas():
     CONSTRAINT fk_cliente
         FOREIGN KEY ("cliente_id")
         REFERENCES "clientes"("cliente_id")
+        ON DELETE CASCADE ON UPDATE CASCADE
     );
     '''
     return sql
@@ -69,10 +70,12 @@ def criarTabelaItens():
     "item_quantidade" int,
     CONSTRAINT fk_vendas
         FOREIGN KEY ("venda_id")
-        REFERENCES "vendas"("venda_id"),
+        REFERENCES "vendas"("venda_id")
+        ON DELETE CASCADE ON UPDATE CASCADE,
     CONSTRAINT fk_produto
         FOREIGN KEY ("produto_id")
         REFERENCES "produtos"("produto_id")
+        ON DELETE CASCADE ON UPDATE CASCADE
     );
     '''
     return sql
@@ -86,11 +89,13 @@ def criarTabelaAgendamentos():
     
     CONSTRAINT fk_cliente
         FOREIGN KEY ("cliente_id")
-        REFERENCES "clientes"("cliente_id"),
+        REFERENCES "clientes"("cliente_id")
+        ON DELETE CASCADE ON UPDATE CASCADE,
     
     CONSTRAINT fk_produto
         FOREIGN KEY ("produto_id")
         REFERENCES "produtos"("produto_id")
+        ON DELETE CASCADE ON UPDATE CASCADE
     );
     '''
     return sql

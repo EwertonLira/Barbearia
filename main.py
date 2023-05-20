@@ -10,7 +10,7 @@ from view.menu import *
 
 #_______________________ instanciar classes _____________________
 
-barbeariaDB = Conexao("barbearia","localhost","5432","postgres","postgre")
+barbeariaDB = Conexao("barbearia","localhost","5432","postgres","postgres")
 agenda = Agendamentos()
 cliente = Clientes()
 item = Itens()
@@ -29,17 +29,42 @@ while op != "0":
             sqlCliente= cliente.inserirNovoCliente()
             resultadoC = barbeariaDB.manipularBanco(sqlCliente)
             mensagemDeConfirmacao(resultadoC)
+
         case "2":
             sqlAgenda = agenda.verAgenda()
             resultadoA = barbeariaDB.consultarBanco(sqlAgenda)
             listaHorasAgenda = agenda.ListaHorariosAgenda(resultadoA)
-            sqlAgenda = agenda.marcarHora(listaHorasAgenda)
+            mensagemMarcarHora(agenda,listaHorasAgenda)
+            sqlCliente = cliente.verCliente()
+            resultadoC = barbeariaDB.consultarBanco(sqlCliente)
+            listaIdClientes = mensagemListaClientes(resultadoC)
+            idCliente = mensagemAgendamento("fraseI")            
+            sqlProduto = produto.verProduto()
+            resultadoP = barbeariaDB.consultarBanco(sqlProduto)
+            listaIdProdutos = mensagemListaProdutos(resultadoP)
+            idServico = mensagemAgendamento("fraseII")
+            sqlAgenda = agenda.inserirAgendamento(idCliente,idServico)
             resultadoA = barbeariaDB.manipularBanco(sqlAgenda)
             mensagemDeConfirmacao(resultadoA)
+            
+            # ao fazer o agendamento também se faz a venda automática
+            venda.setVendaCliente(idCliente) 
+            sqlVenda = venda.ExecutarVenda()
+            barbeariaDB.manipularBanco(sqlVenda)
+            sqlVenda = venda.verVenda()
+            resultadoV = barbeariaDB.consultarBanco(sqlVenda)
+            listaIdvendas = mensagemListaVendas(resultadoV,1,barbeariaDB)
+            item.setVendaId(listaIdvendas)     
+            item.setProdutoId(idServico)
+            item.setQuantidade(1)
+            sqlItem = item.criarItem()
+            resultadoI = barbeariaDB.manipularBanco(sqlItem)
+
         case "3":
             sqlProduto = produto.inserirNovoProduto()
             resultadoP = barbeariaDB.manipularBanco(sqlProduto)
             mensagemDeConfirmacao(resultadoP)
+
         case "4":
             sqlCliente = cliente.verCliente()
             resultadoC = barbeariaDB.consultarBanco(sqlCliente)
@@ -66,6 +91,7 @@ while op != "0":
                 resultadoI = barbeariaDB.manipularBanco(sqlItem)
                 opCase4 = mensagemVenda("fraseIV")
             mensagemDeConfirmacao(True)
+
         case "5":
             sqlCliente = cliente.verCliente()
             resultadoC = barbeariaDB.consultarBanco(sqlCliente)
@@ -87,12 +113,14 @@ while op != "0":
                         mensagemDeConfirmacao(resultadoDEL)
             else:
                 pass
+
         case "6":
             sqlAgenda = agenda.verAgenda()
             resultadoA = barbeariaDB.consultarBanco(sqlAgenda)
-            _ , listaIdAgenda = mensagemListaAgenda(resultadoA)
+            _ , listaIdAgenda = mensagemListaAgenda(resultadoA,barbeariaDB)          
             delOrUp = mensagemEscolherDeletarOuAtualizarAgenda()
             if delOrUp == "Atualizar":
+                _ , _ = mensagemListaAgenda(resultadoA,barbeariaDB)
                 opcaoID = mensagemAtualizarAgenda(listaIdAgenda)
                 if opcaoID:
                     sqlUpdate = agenda.atualizarAgenda(opcaoID)
@@ -100,6 +128,7 @@ while op != "0":
                         resultadoUP = barbeariaDB.manipularBanco(sqlUpdate)
                         mensagemDeConfirmacao(resultadoUP)
             elif delOrUp == "Deletar":
+                _ , _ = mensagemListaAgenda(resultadoA,barbeariaDB)
                 opcaoID = mensagemDeletarAgenda(listaIdAgenda)
                 if opcaoID:
                     sqlDelete = agenda.deletarAgenda(opcaoID)
@@ -108,6 +137,7 @@ while op != "0":
                         mensagemDeConfirmacao(resultadoDEL)
             else:
                 pass
+
         case "7":
             sqlProduto = produto.verProduto()
             resultadoP = barbeariaDB.consultarBanco(sqlProduto)
@@ -129,18 +159,22 @@ while op != "0":
                         mensagemDeConfirmacao(resultadoDEL)
             else:
                 pass
+
         case "8":
-            
             sqlVenda = venda.verVenda()
             resultadoV = barbeariaDB.consultarBanco(sqlVenda)
-            listaIdvendas = mensagemListaVendas(resultadoV,2,barbeariaDB)
-            
-            #NomeCliente = buscarDadosEmTabela(barbeariaDB,"clientes","1",'cliente_nome')
-            
-            #print(listaDados)
-
-            
-            input("o que deseja fazer agora?")
+            _ = mensagemListaVendas(resultadoV,2,barbeariaDB)
+            listaIdvendas = mensagemListaVendas(resultadoV,1,barbeariaDB) # essa gera a lista
+            delOrUP = mensagemEscolherDeletarOuAtualizarVenda()
+            if delOrUP == "Deletar":
+                opcaoID = mensagemDeletarVenda(listaIdvendas)
+                if opcaoID:
+                    sqlDelete = venda.deletarVenda(opcaoID)
+                    if sqlDelete:
+                        resultadoDEL = barbeariaDB.manipularBanco(sqlDelete)
+                        mensagemDeConfirmacao(resultadoDEL)
+            else:
+                pass
 
 print("Obrigado por usar o sysBarber!")        
 

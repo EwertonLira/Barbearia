@@ -30,31 +30,11 @@ class Agendamentos:
             listaHorasAgenda.append(agendamento[3])
         return listaHorasAgenda
 
-    def marcarHora(self,listaHorasAgenda):
-        
-        print(f"""
-código | hora | situação
-        """)
-        for indice, hora in enumerate(self._agendaHorarios):
-            if hora in listaHorasAgenda:
-                print(f"🔴[{indice}] {hora} Reservado")
-            else:
-               print(f"🟢[{indice}] {hora} Disponível")
-        
-        op = input("""
-        digite o código do horário:
-        """)
-        for indice, hora in enumerate(self._agendaHorarios):
-            if str(op) == str(indice):
-               self._horario = hora
-
-        clienteID = input("Escolha o ID do Cliente: ")
-
-        produtoID = input("Escolha o ID do Serviço: ")
+    def inserirAgendamento(self,clienteID, servicoID):
 
         sql = f'''
         INSERT INTO "agendamentos"
-        Values(default, '{clienteID}', '{produtoID}', '{self._horario}')
+        Values(default, '{clienteID}', '{servicoID}', '{self._horario}')
         '''
         return sql
 
